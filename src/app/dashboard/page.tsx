@@ -44,8 +44,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ModeToggle } from "@/components/mode-toggle"
+import { createClient } from '@/utils/supabase/server';
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const supabase = createClient();
+  const { data: trans } = await supabase.from("Transaction").select();
+  const { data: account } = await supabase.from("Account").select();
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -178,7 +183,7 @@ export default function Dashboard() {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
+              <div className="text-2xl font-bold">{account?.[0]?.balance}</div>
               <p className="text-xs text-muted-foreground">
                 +20.1% from last month
               </p>
@@ -246,7 +251,7 @@ export default function Dashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Customer</TableHead>
-                    <TableHead className="hidden xl:table-column">
+                    {/* <TableHead className="hidden xl:table-column">
                       Type
                     </TableHead>
                     <TableHead className="hidden xl:table-column">
@@ -254,32 +259,35 @@ export default function Dashboard() {
                     </TableHead>
                     <TableHead className="hidden xl:table-column">
                       Date
-                    </TableHead>
+                    </TableHead> */}
                     <TableHead className="text-right">Amount</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Liam Johnson</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        liam@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Sale
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Approved
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-23
-                    </TableCell>
-                    <TableCell className="text-right">$250.00</TableCell>
-                  </TableRow>
-                  <TableRow>
+                  {trans?.map((tran) => (
+                    <TableRow key={tran.id}>
+                      <TableCell>
+                        <div className="font-medium">Liam Johnson</div>
+                        <div className="hidden text-sm text-muted-foreground md:inline">
+                          liam@example.com
+                        </div>
+                      </TableCell>
+                      {/* <TableCell className="hidden xl:table-column">
+                        Sale
+                      </TableCell>
+                      <TableCell className="hidden xl:table-column">
+                        <Badge className="text-xs" variant="outline">
+                          Approved
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
+                        2023-06-23
+                      </TableCell> */}
+                      <TableCell className="text-right">{tran.amount}</TableCell>
+                    </TableRow>
+                  ))}
+                  
+                  {/* <TableRow>
                     <TableCell>
                       <div className="font-medium">Olivia Smith</div>
                       <div className="hidden text-sm text-muted-foreground md:inline">
@@ -358,7 +366,7 @@ export default function Dashboard() {
                       2023-06-27
                     </TableCell>
                     <TableCell className="text-right">$550.00</TableCell>
-                  </TableRow>
+                  </TableRow> */}
                 </TableBody>
               </Table>
             </CardContent>
@@ -370,7 +378,7 @@ export default function Dashboard() {
             <CardContent className="grid gap-8">
               <div className="flex items-center gap-4">
                 <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                  {/* <AvatarImage src="/avatars/01.png" alt="Avatar" /> */}
                   <AvatarFallback>OM</AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
@@ -385,7 +393,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center gap-4">
                 <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/02.png" alt="Avatar" />
+                  {/* <AvatarImage src="/avatars/02.png" alt="Avatar" /> */}
                   <AvatarFallback>JL</AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
@@ -400,7 +408,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center gap-4">
                 <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/03.png" alt="Avatar" />
+                  {/* <AvatarImage src="/avatars/03.png" alt="Avatar" /> */}
                   <AvatarFallback>IN</AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
@@ -415,7 +423,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center gap-4">
                 <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/04.png" alt="Avatar" />
+                  {/* <AvatarImage src="/avatars/04.png" alt="Avatar" /> */}
                   <AvatarFallback>WK</AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
@@ -430,7 +438,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center gap-4">
                 <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/05.png" alt="Avatar" />
+                  {/* <AvatarImage src="/avatars/05.png" alt="Avatar" /> */}
                   <AvatarFallback>SD</AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
