@@ -3,13 +3,37 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from 'next/navigation'
+import { createClient } from "@/utils/supabase/client"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useToast } from "@/components/ui/use-toast"
+
+
+
 
 export default function LoginForm() {
   const router = useRouter()
+  const supabase = createClient()
+  const { toast } = useToast()
+
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const login = async () => {
+    await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+    .then(() => router.push('/dashboard'))
+    .catch((error) => toast({
+      variant: "destructive",
+      title: "Uh oh! Something went wrong.",
+    }))
+  }
+  
 
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
@@ -27,7 +51,9 @@ export default function LoginForm() {
               <Input
                 id="email"
                 type="email"
-                placeholder="example@example.com"
+                placeholder="example@sth.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -41,9 +67,15 @@ export default function LoginForm() {
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required />
+              <Input 
+                id="password" 
+                type="password"
+                required 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
-            <Button type="submit" className="w-full" onClick={() => router.push('/dashboard')}>
+            <Button type="submit" className="w-full" onClick={login}>
               Login
             </Button>
             <Button variant="outline" className="w-full">
