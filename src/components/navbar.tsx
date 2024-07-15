@@ -20,15 +20,39 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useToast } from "./ui/use-toast"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
+import { createClient } from "@/utils/supabase/client"
+import { useEffect } from "react"
 
 export default function Navbar() {
-    const router = useRouter();
+    const router = useRouter()
+    const supabase = createClient()
+    const { toast } = useToast()
 
+    useEffect(() => {
+      const isLogin = async () => {
+        const user = await supabase.auth.getSession()
+        if (!user.data.session) router.push('/login')
+      }
+      
+      isLogin()
+    }, [supabase.auth])
+    
+    const logout = async () => {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Unknown error",
+        })
+      }
+      else router.push('/login')
+    }
     return (
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -145,7 +169,7 @@ export default function Navbar() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push('/login')}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

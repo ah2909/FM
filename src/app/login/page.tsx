@@ -4,14 +4,12 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from 'next/navigation'
 import { createClient } from "@/utils/supabase/client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
-
-
 
 
 export default function LoginForm() {
@@ -22,16 +20,28 @@ export default function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+  useEffect(() => {
+    const isLogin = async () => {
+      const { data: { user }} = await supabase.auth.getUser()
+      if (user) router.push('/dashboard')
+    }
+    
+    isLogin()
+  }, [])
+
   const login = async () => {
     await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     })
-    .then(() => router.push('/dashboard'))
-    .catch((error) => toast({
-      variant: "destructive",
-      title: "Uh oh! Something went wrong.",
-    }))
+    .then((res) => {
+      if(res.error) 
+        toast({
+          variant: "destructive",
+          title: "Wrong email or password",
+        })
+      else router.push('/dashboard')
+    })
   }
   
 

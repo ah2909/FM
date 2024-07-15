@@ -24,7 +24,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-
 import {
   Table,
   TableBody,
@@ -33,14 +32,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
 
 import Navbar from "@/components/navbar"
+import TransactionDialog from "@/components/transaction-dialog"
 import { createClient } from '@/utils/supabase/server';
 
 export default async function Dashboard() {
   const supabase = createClient();
   const { data: trans } = await supabase.from("Transaction").select();
-
+    
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
@@ -110,12 +111,10 @@ export default async function Dashboard() {
                   Recent transactions from your store.
                 </CardDescription>
               </div>
-              <Button asChild size="sm" className="ml-auto gap-1">
-                <Link href="#">
-                  View All
-                  <ArrowUpRight className="h-4 w-4" />
-                </Link>
-              </Button>
+              <div className="ml-auto gap-1">
+                <TransactionDialog />
+              </div>
+              
             </CardHeader>
             <CardContent>
               <Table>
@@ -138,7 +137,18 @@ export default async function Dashboard() {
                   {trans?.map((tran) => (
                     <TableRow key={tran.id}>
                       <TableCell>
+                      {
+                      tran.type === "EXPENSE" ? (
+                      <Badge variant="destructive">
                         <div className="font-medium">{tran.content}</div>
+                      </Badge>
+                      )
+                      : (
+                      <Badge>
+                        <div className="font-medium">{tran.content}</div>
+                      </Badge>
+                      )
+                      }
                         {/* <div className="hidden text-sm text-muted-foreground md:inline">
                           liam@example.com
                         </div> */}
@@ -157,87 +167,6 @@ export default async function Dashboard() {
                       <TableCell className="text-right">{tran.amount}</TableCell>
                     </TableRow>
                   ))}
-                  
-                  {/* <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Olivia Smith</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        olivia@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Refund
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Declined
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-24
-                    </TableCell>
-                    <TableCell className="text-right">$150.00</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Noah Williams</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        noah@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Subscription
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Approved
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-25
-                    </TableCell>
-                    <TableCell className="text-right">$350.00</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Emma Brown</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        emma@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Sale
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Approved
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-26
-                    </TableCell>
-                    <TableCell className="text-right">$450.00</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Liam Johnson</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        liam@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Sale
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Approved
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-27
-                    </TableCell>
-                    <TableCell className="text-right">$550.00</TableCell>
-                  </TableRow> */}
                 </TableBody>
               </Table>
             </CardContent>
