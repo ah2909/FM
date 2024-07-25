@@ -13,21 +13,19 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
-import { createClient } from "@/utils/supabase/client"
 
 export default function RegisterForm() {
-  const supabase = createClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const signUp = async () => {
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        emailRedirectTo: 'http://localhost:3000/login',
-      },
-    })
+    // const { data, error } = await supabase.auth.signUp({
+    //   email: email,
+    //   password: password,
+    //   options: {
+    //     emailRedirectTo: 'http://localhost:3000/login',
+    //   },
+    // })
   }
 
   return (

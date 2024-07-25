@@ -36,11 +36,71 @@ import { Badge } from "@/components/ui/badge"
 
 import Navbar from "@/components/navbar"
 import TransactionDialog from "@/components/transaction-dialog"
-import { createClient } from '@/utils/supabase/server';
+
+const trans = [
+  {
+    id: 1,
+    type: "EXPENSE",
+    content: "Some example category of expense",
+    amount: 100000,
+  },
+  {
+    id: 2,
+    type: "INCOME",
+    content: "Basic income of a human",
+    amount: 100000,
+  },
+  {
+    id: 3,
+    type: "EXPENSE",
+    content: "Some example category of expense",
+    amount: 200000,
+  },
+  {
+    id: 4,
+    type: "INCOME",
+    content: "Basic income of a human",
+    amount: 100000,
+  },
+  {
+    id: 5,
+    type: "EXPENSE",
+    content: "Parking",
+    amount: 250000,
+  },
+  {
+    id: 6,
+    type: "EXPENSE",
+    content: "Daily meals",
+    amount: 500000,
+  },
+  {
+    id: 7,
+    type: "EXPENSE",
+    content: "Some example category of expense",
+    amount: 750000,
+  },
+  {
+    id: 8,
+    type: "INCOME",
+    content: "Basic income of a human",
+    amount: 100000,
+  },
+  {
+    id: 9,
+    type: "INCOME",
+    content: "Some content",
+    amount: 500000,
+  },
+  {
+    id: 10,
+    type: "INCOME",
+    content: "Basic income of a human",
+    amount: 1000000,
+  },
+]
 
 export default async function Dashboard() {
-  const supabase = createClient();
-  const { data: trans } = await supabase.from("Transaction").select();
     
   return (
     <div className="flex min-h-screen w-full flex-col">

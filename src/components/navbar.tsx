@@ -26,32 +26,21 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
 import { redirect, useRouter } from "next/navigation"
-import { createClient } from "@/utils/supabase/client"
 import { useEffect } from "react"
 
 export default function Navbar() {
     const router = useRouter()
-    const supabase = createClient()
     const { toast } = useToast()
-
-    useEffect(() => {
-      const isLogin = async () => {
-        const user = await supabase.auth.getSession()
-        if (!user.data.session) router.push('/login')
-      }
-      
-      isLogin()
-    }, [supabase.auth])
     
     const logout = async () => {
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Unknown error",
-        })
-      }
-      else router.push('/login')
+      // const { error } = await supabase.auth.signOut()
+      // if (error) {
+      //   toast({
+      //     variant: "destructive",
+      //     title: "Unknown error",
+      //   })
+      // }
+      // else router.push('/login')
     }
     return (
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
