@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link"
 import {
   Activity,
@@ -33,75 +35,36 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import Navbar from "@/components/navbar"
 import TransactionDialog from "@/components/transaction-dialog"
+import { protected_api } from "@/utils/Request"
+import { useState, useEffect } from "react"
+import { getTransactions } from "@/lib/api"
 
-const trans = [
-  {
-    id: 1,
-    type: "EXPENSE",
-    content: "Some example category of expense",
-    amount: 100000,
-  },
-  {
-    id: 2,
-    type: "INCOME",
-    content: "Basic income of a human",
-    amount: 100000,
-  },
-  {
-    id: 3,
-    type: "EXPENSE",
-    content: "Some example category of expense",
-    amount: 200000,
-  },
-  {
-    id: 4,
-    type: "INCOME",
-    content: "Basic income of a human",
-    amount: 100000,
-  },
-  {
-    id: 5,
-    type: "EXPENSE",
-    content: "Parking",
-    amount: 250000,
-  },
-  {
-    id: 6,
-    type: "EXPENSE",
-    content: "Daily meals",
-    amount: 500000,
-  },
-  {
-    id: 7,
-    type: "EXPENSE",
-    content: "Some example category of expense",
-    amount: 750000,
-  },
-  {
-    id: 8,
-    type: "INCOME",
-    content: "Basic income of a human",
-    amount: 100000,
-  },
-  {
-    id: 9,
-    type: "INCOME",
-    content: "Some content",
-    amount: 500000,
-  },
-  {
-    id: 10,
-    type: "INCOME",
-    content: "Basic income of a human",
-    amount: 1000000,
-  },
-]
-
-export default async function Dashboard() {
+export default function Dashboard() {
+  const [trans, setTrans] = useState<any>([])
+  useEffect(() => {
+    getTransactions()
+    .then(res => {
+      setTrans(res.data)
+    })
+    .catch(err => console.log(err))
     
+  }, [])
+
+  function formatDate(isoDate: string) {
+    const date = new Date(isoDate);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
@@ -171,12 +134,21 @@ export default async function Dashboard() {
                   Recent transactions from your store.
                 </CardDescription>
               </div>
-              <div className="ml-auto gap-1">
+              <div className="ml-auto gap-1 bg-background">
                 <TransactionDialog />
               </div>
               
             </CardHeader>
             <CardContent>
+              {trans.length === 0 ? (
+                  <div>
+                    <Skeleton className="h-5 w-auto mt-3"/>
+                    <Skeleton className="h-5 w-auto mt-3"/>
+                    <Skeleton className="h-5 w-auto mt-3"/>
+                    <Skeleton className="h-5 w-auto mt-3"/>
+                  </div>
+              )
+              :
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -194,24 +166,25 @@ export default async function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {trans?.map((tran) => (
+                  {trans.map((tran: any) => (
                     <TableRow key={tran.id}>
                       <TableCell>
-                      {
-                      tran.type === "EXPENSE" ? (
-                      <Badge variant="destructive">
-                        <div className="font-medium">{tran.content}</div>
-                      </Badge>
-                      )
-                      : (
-                      <Badge>
-                        <div className="font-medium">{tran.content}</div>
-                      </Badge>
-                      )
-                      }
-                        {/* <div className="hidden text-sm text-muted-foreground md:inline">
-                          liam@example.com
-                        </div> */}
+                        {
+                        tran.type === "EXPENSE" ? (
+                        <Badge variant="destructive">
+                          <p className="font-medium text-base">{tran.content}</p>
+                        </Badge>
+                        )
+                        : (
+                        <Badge>
+                          <p className="font-medium text-base">{tran.content}</p>
+                        </Badge>
+                        )
+                        }
+                        <br />
+                        <div className="mt-2 text-sm text-muted-foreground md:inline">
+                          {formatDate(tran.created_at)}
+                        </div>
                       </TableCell>
                       {/* <TableCell className="hidden xl:table-column">
                         Sale
@@ -229,6 +202,7 @@ export default async function Dashboard() {
                   ))}
                 </TableBody>
               </Table>
+              }
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-5">

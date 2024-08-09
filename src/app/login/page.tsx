@@ -10,6 +10,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
 
+import { api } from "@/utils/Request"
+import { getFromLocalStorage } from "@/utils/Request"
+
 
 export default function LoginForm() {
   const router = useRouter()
@@ -18,19 +21,25 @@ export default function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+  if(getFromLocalStorage('apiToken')) router.push('/dashboard')
+
   const login = async () => {
-    // await supabase.auth.signInWithPassword({
-    //   email: email,
-    //   password: password,
-    // })
-    // .then((res) => {
-    //   if(res.error) 
-    //     toast({
-    //       variant: "destructive",
-    //       title: "Wrong email or password",
-    //     })
-    //   else router.push('/dashboard')
-    // })
+    await api.post('/api/login', {
+      email: email,
+      password: password,
+    })
+    .then((res) => {
+      console.log(res)
+      localStorage.setItem('apiToken', res.data.token)
+      router.push('/dashboard')
+    })
+    .catch((err) => {
+      console.log(err)
+      toast({
+        variant: "destructive",
+        title: "Wrong email or password",
+      })
+    })
   }
   
 

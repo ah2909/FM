@@ -13,10 +13,15 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
+import { getFromLocalStorage, protected_api } from "@/utils/Request"
+import { useRouter } from "next/navigation"
 
 export default function RegisterForm() {
+  const router = useRouter()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  if(getFromLocalStorage('apiToken')) router.push('/dashboard')
 
   const signUp = async () => {
     // const { data, error } = await supabase.auth.signUp({
