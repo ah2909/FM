@@ -39,20 +39,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import Navbar from "@/components/navbar"
 import TransactionDialog from "@/components/transaction-dialog"
-import { protected_api } from "@/utils/Request"
 import { useState, useEffect } from "react"
-import { getTransactions } from "@/lib/api"
+import { useTransactions } from "@/lib/api"
+
 
 export default function Dashboard() {
-  const [trans, setTrans] = useState<any>([])
-  useEffect(() => {
-    getTransactions()
-    .then(res => {
-      setTrans(res.data)
-    })
-    .catch(err => console.log(err))
-    
-  }, [])
+  const { trans, isLoading, isError } = useTransactions()
 
   function formatDate(isoDate: string) {
     const date = new Date(isoDate);
@@ -131,7 +123,7 @@ export default function Dashboard() {
               <div className="grid gap-2">
                 <CardTitle>Transactions</CardTitle>
                 <CardDescription>
-                  Recent transactions from your store.
+                  Recent transactions of this week.
                 </CardDescription>
               </div>
               <div className="ml-auto gap-1 bg-background">
@@ -140,7 +132,7 @@ export default function Dashboard() {
               
             </CardHeader>
             <CardContent>
-              {trans.length === 0 ? (
+              {isLoading ? (
                   <div>
                     <Skeleton className="h-5 w-auto mt-3"/>
                     <Skeleton className="h-5 w-auto mt-3"/>
@@ -152,7 +144,7 @@ export default function Dashboard() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Content</TableHead>
+                    <TableHead className="text-base font-semibold">Content</TableHead>
                     {/* <TableHead className="hidden xl:table-column">
                       Type
                     </TableHead>
@@ -162,27 +154,27 @@ export default function Dashboard() {
                     <TableHead className="hidden xl:table-column">
                       Date
                     </TableHead> */}
-                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="text-base font-semibold text-right">Amount</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {trans.map((tran: any) => (
+                  {trans?.data.map((tran: any) => (
                     <TableRow key={tran.id}>
                       <TableCell>
                         {
                         tran.type === "EXPENSE" ? (
                         <Badge variant="destructive">
-                          <p className="font-medium text-base">{tran.content}</p>
+                          <p className="text-sm">{tran.content}</p>
                         </Badge>
                         )
                         : (
                         <Badge>
-                          <p className="font-medium text-base">{tran.content}</p>
+                          <p className="text-sm">{tran.content}</p>
                         </Badge>
                         )
                         }
                         <br />
-                        <div className="mt-2 text-sm text-muted-foreground md:inline">
+                        <div className="mt-2 text-xs text-muted-foreground md:inline">
                           {formatDate(tran.created_at)}
                         </div>
                       </TableCell>

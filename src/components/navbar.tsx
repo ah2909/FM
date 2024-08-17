@@ -33,8 +33,6 @@ import { useEffect } from "react"
 export default function Navbar() {
     const router = useRouter()
     const { toast } = useToast()
-    
-    if(!getFromLocalStorage('apiToken')) router.replace('/login')
 
     const logout = async () => {
       await protected_api.post('/api/logout')
@@ -51,9 +49,9 @@ export default function Navbar() {
       })
     }
 
-    // useEffect(() => {
-    //     if(!getFromLocalStorage('apiToken')) router.replace('/login')
-    // }, [])
+    useEffect(() => {
+        if(!getFromLocalStorage('apiToken')) router.push('/login')
+    }, [router])
 
     return (
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
