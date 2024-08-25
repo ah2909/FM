@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 export const getFromLocalStorage = (key: string) => {
-    if (!key || typeof window === "undefined") {
-      return "";
+    if (!key || typeof window === "undefined" || !localStorage.getItem(key)) {
+      return null
     }
-    return localStorage.getItem(key);
+    let token = localStorage.getItem(key) ?? null
+    return token
 }
 
 export const api = axios.create({
@@ -13,5 +14,18 @@ export const api = axios.create({
 
 export const protected_api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_HOST_URL,
-    headers: {'Authorization': 'Bearer ' + getFromLocalStorage('apiToken')},
 })
+protected_api.interceptors.request.use(
+    (config) => {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('apiToken');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );

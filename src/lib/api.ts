@@ -1,11 +1,17 @@
 import { protected_api } from "@/utils/Request";
-import useSWR, { useSWRConfig } from "swr"
+import useSWR from "swr"
 
-const fetcher = async (url: string) => await protected_api.get(url).then((res) => res.data);
+const fetcher = async (url: string) => await protected_api.get(url)
+.then((res) => res.data);
+
 
 
 export const useTransactions = () => {
-    const { data, error, isLoading } = useSWR(`/api/transactions`, fetcher)
+    const { data, error, isLoading } = useSWR(
+        '/api/transactions', 
+        fetcher,
+        { revalidateOnFocus: false, }
+    )
     return {
         trans: data,
         isLoading,
@@ -15,10 +21,15 @@ export const useTransactions = () => {
 
 export const addTransaction = async (data: any) => {
     await protected_api.post('/api/transactions', data)
+    .then(res => res.data)
 }
 
 export const useCategory = () => {
-    const { data, error, isLoading } = useSWR(`/api/category`, fetcher)
+    const { data, error, isLoading } = useSWR(
+        '/api/category',
+        fetcher,
+        { revalidateOnFocus: false, }
+    )
     return {
         category: data,
         isLoading,
@@ -27,7 +38,11 @@ export const useCategory = () => {
 }
 
 export const useCategoryByType = (type: string) => {
-    const { data, error, isLoading } = useSWR(type !== '' ? `/api/category/${type}` : null, fetcher)
+    const { data, error, isLoading } = useSWR(
+        type !== '' ? `/api/category/${type}` : null,
+        fetcher,
+        { revalidateOnFocus: false, }
+    )
     return {
         category: data,
         isLoading,

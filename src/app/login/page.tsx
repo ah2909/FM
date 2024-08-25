@@ -3,7 +3,6 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,18 +17,12 @@ export default function LoginForm() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-
   if(getFromLocalStorage('apiToken')) router.push('/dashboard')
 
-  const login = async () => {
-    await api.post('/api/login', {
-      email: email,
-      password: password,
-    })
+  const login = async (formData: FormData) => {
+    let data = Object.fromEntries(formData)
+    await api.post('/api/login', data)
     .then((res) => {
-      console.log(res)
       localStorage.setItem('apiToken', res.data.token)
       router.push('/dashboard')
     })
@@ -53,15 +46,15 @@ export default function LoginForm() {
               Enter your email below to login to your account
             </p>
           </div>
+          <form action={login}>
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="example@sth.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -76,20 +69,20 @@ export default function LoginForm() {
                 </Link>
               </div>
               <Input 
-                id="password" 
+                id="password"
+                name="password"
                 type="password"
                 required 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full" onClick={login}>
+            <Button type="submit" className="w-full">
               Login
             </Button>
             <Button variant="outline" className="w-full">
               Login with Google
             </Button>
           </div>
+          </form>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/register" className="underline">

@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { protected_api } from "@/utils/Request"
 import { getFromLocalStorage } from "@/utils/Request"
 import { useEffect } from "react"
@@ -50,8 +50,8 @@ export default function Navbar() {
     }
 
     useEffect(() => {
-        if(!getFromLocalStorage('apiToken')) router.push('/login')
-    }, [router])
+        if(!getFromLocalStorage('apiToken')) redirect('/login')
+    }, [])
 
     return (
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">

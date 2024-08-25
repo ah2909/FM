@@ -18,7 +18,6 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -39,7 +38,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import Navbar from "@/components/navbar"
 import TransactionDialog from "@/components/transaction-dialog"
-import { useState, useEffect } from "react"
 import { useTransactions } from "@/lib/api"
 
 
@@ -55,6 +53,16 @@ export default function Dashboard() {
     const minutes = date.getMinutes().toString().padStart(2, '0');
 
     return `${day}/${month}/${year} ${hours}:${minutes}`;
+  }
+
+  function formatAmount(amount: string) {
+    let number = parseInt(amount, 10);
+
+    // Format the number with a dot as the thousand separator
+    let formattedNumber = number.toLocaleString('vi-VN');
+
+    // Append the currency symbol
+    return `${formattedNumber} VNĐ`;
   }
 
   return (
@@ -140,6 +148,9 @@ export default function Dashboard() {
                     <Skeleton className="h-5 w-auto mt-3"/>
                   </div>
               )
+              : trans?.data?.length == 0 ? (
+                <p className="text-center font-semibold">Not have transaction yet.</p>
+              )
               :
               <Table>
                 <TableHeader>
@@ -189,7 +200,7 @@ export default function Dashboard() {
                       <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
                         2023-06-23
                       </TableCell> */}
-                      <TableCell className="text-right">{tran.amount}</TableCell>
+                      <TableCell className="text-right font-semibold">{formatAmount(tran.amount)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -1,4 +1,5 @@
 'use client'
+
 import {
     Dialog,
     DialogContent,
@@ -17,6 +18,7 @@ import {
     SelectGroup,
     SelectLabel,
 } from "@/components/ui/select"
+import { Skeleton } from "./ui/skeleton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -29,12 +31,14 @@ export default function TransactionDialog() {
     const { toast } = useToast()
     const { mutate } = useSWRConfig()
     const [transactionType, setTransactionType] = useState<string>('')
+    const [open, setOpen] = useState<boolean>(false);
     const { category, isLoading, isError } = useCategoryByType(transactionType)
 
     const onSubmit = async (formData: FormData) => {
         let data = Object.fromEntries(formData)
         await addTransaction(data)
         .then(() => {
+            setOpen(false)
             toast({
                 title: "Add new transaction successfully",
               })
@@ -45,12 +49,12 @@ export default function TransactionDialog() {
                 title: err,
               })
         })
-        mutate('/api/transactions')
+        mutate(`/api/transactions`)
     }
 
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>Add transaction</Button>
             </DialogTrigger>
@@ -58,7 +62,7 @@ export default function TransactionDialog() {
                 <DialogHeader>
                 <DialogTitle>Add transaction</DialogTitle>
                 </DialogHeader>
-                <form action={ onSubmit } method="post">
+                <form action={ onSubmit }>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="content" className="text-right">
@@ -114,11 +118,14 @@ export default function TransactionDialog() {
                                 <SelectContent>
                                     <SelectGroup>
                                     <SelectLabel>Category Income</SelectLabel>
-                                    {category?.data?.map((tmp: any) => (
-                                        <SelectItem key={tmp.id} value={tmp.name}>{tmp.name}</SelectItem>
-                                    ))}
-                                    {/* <SelectItem value="INCOME">Income</SelectItem>
-                                    <SelectItem value="EXPENSE">Expense</SelectItem> */}
+                                    {isLoading ? (
+                                        <Skeleton className="h-5 w-auto mx-4 my-2"/>                         
+                                    )
+                                    : 
+                                        category?.data?.map((tmp: any) => (
+                                            <SelectItem key={tmp.id} value={tmp.name}>{tmp.name}</SelectItem>
+                                        ))
+                                    }
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
@@ -136,11 +143,14 @@ export default function TransactionDialog() {
                                 <SelectContent>
                                     <SelectGroup>
                                     <SelectLabel>Category Expense</SelectLabel>
-                                    {category?.data?.map((tmp: any) => (
-                                        <SelectItem key={tmp.id} value={tmp.name}>{tmp.name}</SelectItem>
-                                    ))}
-                                    {/* <SelectItem value="INCOME">Income</SelectItem>
-                                    <SelectItem value="EXPENSE">Expense</SelectItem> */}
+                                    {isLoading ? (
+                                        <Skeleton className="h-5 w-auto mx-4 my-2"/>                         
+                                    )
+                                    : 
+                                        category?.data?.map((tmp: any) => (
+                                            <SelectItem key={tmp.id} value={tmp.name}>{tmp.name}</SelectItem>
+                                        ))
+                                    }
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>

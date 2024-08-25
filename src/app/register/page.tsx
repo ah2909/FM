@@ -12,25 +12,33 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
-import { getFromLocalStorage, protected_api } from "@/utils/Request"
+import { getFromLocalStorage, api } from "@/utils/Request"
 import { useRouter } from "next/navigation"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function RegisterForm() {
   const router = useRouter()
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+  const { toast } = useToast()
   if(getFromLocalStorage('apiToken')) router.push('/dashboard')
 
-  const signUp = async () => {
-    // const { data, error } = await supabase.auth.signUp({
-    //   email: email,
-    //   password: password,
-    //   options: {
-    //     emailRedirectTo: 'http://localhost:3000/login',
-    //   },
-    // })
+  const signUp = async (formData: FormData) => {
+    let tmp_data = Object.fromEntries(formData)
+    let {first_name, last_name, ...data} = tmp_data
+    data.name = tmp_data.last_name.toString() + tmp_data.first_name.toString()
+    await api.post('/api/register', data)
+        .then(() => {
+            toast({
+                title: "Register successfully",
+              })
+            router.push('/login')
+           
+        })
+        .catch((err) => {
+            toast({
+                variant: 'destructive',
+                title: err,
+              })
+        })
   }
 
   return (
@@ -43,24 +51,24 @@ export default function RegisterForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <form action={signUp}>
         <div className="grid gap-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="first-name">First name</Label>
-              <Input id="first-name" placeholder="Max" required />
+              <Input id="first-name" name="first_name" placeholder="Max" required />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="last-name">Last name</Label>
-              <Input id="last-name" placeholder="Robinson" required />
+              <Input id="last-name" name="last_name" placeholder="Robinson" required />
             </div>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               placeholder="example@sth.com"
               required
             />
@@ -69,17 +77,16 @@ export default function RegisterForm() {
             <Label htmlFor="password">Password</Label>
             <Input 
                 id="password" 
+                name="password"
                 type="password"
-                required 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)}
+                required  
               />
           </div>
-          <Button type="submit" className="w-full" onClick={signUp}>
+          <Button type="submit" className="w-full">
             Create an account
           </Button>
           <Button variant="outline" className="w-full">
-            Sign up with GitHub
+            Sign up with Google
           </Button>
         </div>
         <div className="mt-4 text-center text-sm">
@@ -88,6 +95,7 @@ export default function RegisterForm() {
             Sign in
           </Link>
         </div>
+        </form>
       </CardContent>
     </Card>
     </div>
