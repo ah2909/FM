@@ -49,3 +49,16 @@ export const useCategoryByType = (type: string) => {
         isError: error
     }
 }
+
+export const useTransactionStatistics = () => {
+    const { data, error, isLoading } = useSWR(
+        '/api/transactions/statistics', 
+        fetcher,
+        { revalidateOnFocus: false, }
+    )
+    return {
+        statistic: data,
+        statistic_loading: isLoading,
+        statistic_error: error
+    }
+}

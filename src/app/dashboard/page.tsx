@@ -38,11 +38,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import Navbar from "@/components/navbar"
 import TransactionDialog from "@/components/transaction-dialog"
-import { useTransactions } from "@/lib/api"
+import { useTransactions, useTransactionStatistics } from "@/lib/api"
 
 
 export default function Dashboard() {
   const { trans, isLoading, isError } = useTransactions()
+  const { statistic, statistic_loading, statistic_error } = useTransactionStatistics()
 
   function formatDate(isoDate: string) {
     const date = new Date(isoDate);
@@ -73,12 +74,21 @@ export default function Dashboard() {
           <Card x-chunk="dashboard-01-chunk-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Revenue
+                Balance
               </CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">1000</div>
+              { statistic_loading ? (
+                <div>
+                  <Skeleton className="h-5 w-20 my-1"/>
+                </div>
+              )
+              : (
+                <div className="text-2xl font-bold">{formatAmount(statistic.balance)}</div>
+              )
+              }
+              
               <p className="text-xs text-muted-foreground">
                 +20.1% from last month
               </p>
@@ -87,12 +97,20 @@ export default function Dashboard() {
           <Card x-chunk="dashboard-01-chunk-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Subscriptions
+                Total Expense
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+2350</div>
+            { statistic_loading ? (
+                <div>
+                  <Skeleton className="h-5 w-20 my-1"/>
+                </div>
+              )
+              : (
+                <div className="text-2xl font-bold">{formatAmount(statistic.expense)}</div>
+              )
+            }
               <p className="text-xs text-muted-foreground">
                 +180.1% from last month
               </p>
@@ -100,11 +118,19 @@ export default function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sales</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Income</CardTitle>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+12,234</div>
+            { statistic_loading ? (
+                <div>
+                  <Skeleton className="h-5 w-20 my-1"/>
+                </div>
+              )
+              : (
+                <div className="text-2xl font-bold">{formatAmount(statistic.income)}</div>
+              )
+              }
               <p className="text-xs text-muted-foreground">
                 +19% from last month
               </p>
@@ -112,7 +138,7 @@ export default function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-3">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+              <CardTitle className="text-sm font-medium">Savings</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -156,15 +182,7 @@ export default function Dashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-base font-semibold">Content</TableHead>
-                    {/* <TableHead className="hidden xl:table-column">
-                      Type
-                    </TableHead>
-                    <TableHead className="hidden xl:table-column">
-                      Status
-                    </TableHead>
-                    <TableHead className="hidden xl:table-column">
-                      Date
-                    </TableHead> */}
+                    <TableHead className="text-base font-semibold text-center">Category</TableHead>
                     <TableHead className="text-base font-semibold text-right">Amount</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -189,17 +207,7 @@ export default function Dashboard() {
                           {formatDate(tran.created_at)}
                         </div>
                       </TableCell>
-                      {/* <TableCell className="hidden xl:table-column">
-                        Sale
-                      </TableCell>
-                      <TableCell className="hidden xl:table-column">
-                        <Badge className="text-xs" variant="outline">
-                          Approved
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                        2023-06-23
-                      </TableCell> */}
+                      <TableCell className="text-center font-semibold">{tran.category?.name}</TableCell>
                       <TableCell className="text-right font-semibold">{formatAmount(tran.amount)}</TableCell>
                     </TableRow>
                   ))}

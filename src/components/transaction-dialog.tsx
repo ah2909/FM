@@ -50,6 +50,7 @@ export default function TransactionDialog() {
               })
         })
         mutate(`/api/transactions`)
+        mutate('/api/transactions/statistics')
     }
 
 
