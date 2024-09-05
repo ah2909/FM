@@ -36,7 +36,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import DateRangePicker from "@/components/DateRangePicker";
 import TransactionDialog from "@/components/TransactionDialog";
@@ -44,19 +44,18 @@ import { useTransactions, calculateStatistics } from "@/lib/api";
 import { DateRange } from "react-day-picker";
 import { addDays, format } from "date-fns";
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/NavBar";
 import { HiArrowDownLeft, HiArrowUpRight } from "react-icons/hi2";
 import { IconContext } from "react-icons";
 
 export default function Dashboard() {
-  
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 7),
   });
-  const [data, setData] = useState<any>({})
-  const [page, setPage] = useState<number>(1)
-  const { trans, isLoading, isError } = useTransactions(page)
+  const [data, setData] = useState<any>({});
+  const [page, setPage] = useState<number>(1);
+  const { trans, isLoading, isError } = useTransactions(page);
 
   useEffect(() => {
     const getData = async () => {
@@ -80,22 +79,22 @@ export default function Dashboard() {
   };
 
   const renderPagination = (totalPages: number) => {
-    const paginationItems = []
+    const paginationItems = [];
     for (let i = 1; i <= totalPages; i++) {
       paginationItems.push(
         <PaginationItem key={i}>
-          <PaginationLink 
-            href="#" 
-            isActive={page === i} 
+          <PaginationLink
+            href="#"
+            isActive={page === i}
             onClick={() => setPage(i)}
           >
             {i}
           </PaginationLink>
         </PaginationItem>
-      )
+      );
     }
-    return paginationItems
-  }
+    return paginationItems;
+  };
 
   function formatDate(isoDate: string) {
     const date = new Date(isoDate);
@@ -230,75 +229,87 @@ export default function Dashboard() {
                 </p>
               ) : (
                 <>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-base font-semibold">
-                        Content
-                      </TableHead>
-                      <TableHead className="text-base font-semibold text-center">
-                        Category
-                      </TableHead>
-                      <TableHead className="text-base font-semibold text-center">
-                        Amount
-                      </TableHead>
-                      <TableHead className="text-base font-semibold text-center">
-                        Date
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {trans?.data?.data.map((tran: any) => (
-                      <TableRow key={tran.id}>
-                        <TableCell>
-                          <div className="flex">
-                            {tran.type === "EXPENSE" ? (
-                              <IconContext.Provider value={{ color: "red", size: "1rem" }}>
-                                <HiArrowDownLeft />
-                              </IconContext.Provider>
-                            ) : (
-                              <IconContext.Provider value={{ color: "green", size: "1rem" }}>
-                                <HiArrowUpRight />
-                              </IconContext.Provider>
-                            )}
-                            <p className="ml-3 font-semibold">{tran.content}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-center font-semibold">
-                          {tran.category?.name}
-                        </TableCell>
-                        <TableCell className="text-center font-semibold">
-                          {formatAmount(tran.amount)}
-                        </TableCell>
-                        <TableCell className="text-center font-semibold">
-                          {formatDate(tran.created_at)}
-                        </TableCell>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-base font-semibold">
+                          Content
+                        </TableHead>
+                        <TableHead className="text-base font-semibold text-center">
+                          Category
+                        </TableHead>
+                        <TableHead className="text-base font-semibold text-center">
+                          Amount
+                        </TableHead>
+                        <TableHead className="text-base font-semibold text-center">
+                          Date
+                        </TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-    
-                <Pagination>
-                  <PaginationContent>
-                    {page !== 1 && (
-                      <PaginationItem>
-                      <PaginationPrevious href="#" onClick={() => setPage(page - 1)} />
-                    </PaginationItem>
-                    )}
-                    
-                    {renderPagination(parseInt(trans?.data?.last_page))}
-                    {/* <PaginationItem>
+                    </TableHeader>
+                    <TableBody>
+                      {trans?.data?.data.map((tran: any) => (
+                        <TableRow key={tran.id}>
+                          <TableCell>
+                            <div className="flex">
+                              {tran.type === "EXPENSE" ? (
+                                <IconContext.Provider
+                                  value={{ color: "red", size: "1rem" }}
+                                >
+                                  <HiArrowDownLeft />
+                                </IconContext.Provider>
+                              ) : (
+                                <IconContext.Provider
+                                  value={{ color: "green", size: "1rem" }}
+                                >
+                                  <HiArrowUpRight />
+                                </IconContext.Provider>
+                              )}
+                              <p className="ml-3 font-semibold">
+                                {tran.content}
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-center font-semibold">
+                            {tran.category?.name}
+                          </TableCell>
+                          <TableCell className="text-center font-semibold">
+                            {formatAmount(tran.amount)}
+                          </TableCell>
+                          <TableCell className="text-center font-semibold">
+                            {formatDate(tran.created_at)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+
+                  <Pagination>
+                    <PaginationContent>
+                      {page !== 1 && (
+                        <PaginationItem>
+                          <PaginationPrevious
+                            href="#"
+                            onClick={() => setPage(page - 1)}
+                          />
+                        </PaginationItem>
+                      )}
+
+                      {renderPagination(parseInt(trans?.data?.last_page))}
+                      {/* <PaginationItem>
                       <PaginationEllipsis />
                     </PaginationItem> */}
 
-                    {page !== parseInt(trans?.data?.last_page) && (
-                      <PaginationItem>
-                        <PaginationNext href="#" onClick={() => setPage(page + 1)} />
-                      </PaginationItem>
-                    )}
-                  </PaginationContent>
-                </Pagination>
-              </>
+                      {page !== parseInt(trans?.data?.last_page) && (
+                        <PaginationItem>
+                          <PaginationNext
+                            href="#"
+                            onClick={() => setPage(page + 1)}
+                          />
+                        </PaginationItem>
+                      )}
+                    </PaginationContent>
+                  </Pagination>
+                </>
               )}
             </CardContent>
           </Card>
