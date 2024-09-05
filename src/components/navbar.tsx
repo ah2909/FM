@@ -24,7 +24,7 @@ import { useToast } from "./ui/use-toast"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
+import { ModeToggle } from "@/components/DarkToggle"
 import { redirect, useRouter } from "next/navigation"
 import { protected_api } from "@/utils/Request"
 import { getFromLocalStorage } from "@/utils/Request"
@@ -64,16 +64,16 @@ export default function Navbar() {
             <span className="sr-only">Acme Inc</span>
           </Link>
           <Link
-            href="#"
+            href="/dashboard"
             className="text-foreground transition-colors hover:text-foreground"
           >
             Dashboard
           </Link>
           <Link
-            href="#"
+            href="/assets"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Orders
+            Assets
           </Link>
           <Link
             href="#"

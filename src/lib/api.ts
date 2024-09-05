@@ -6,9 +6,9 @@ const fetcher = async (url: string) => await protected_api.get(url)
 
 
 
-export const useTransactions = () => {
+export const useTransactions = (page: number) => {
     const { data, error, isLoading } = useSWR(
-        '/api/transactions', 
+        `/api/transactions?page=${page}`, 
         fetcher,
         { revalidateOnFocus: false, }
     )
@@ -50,15 +50,7 @@ export const useCategoryByType = (type: string) => {
     }
 }
 
-export const useTransactionStatistics = () => {
-    const { data, error, isLoading } = useSWR(
-        '/api/transactions/statistics', 
-        fetcher,
-        { revalidateOnFocus: false, }
-    )
-    return {
-        statistic: data,
-        statistic_loading: isLoading,
-        statistic_error: error
-    }
+export const calculateStatistics = async (data: any) => {
+    const res = await protected_api.post('/api/transactions/statistics', data)
+    return res.data
 }

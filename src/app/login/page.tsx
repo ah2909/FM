@@ -3,30 +3,36 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from 'next/navigation'
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
-
+import { Loader2 } from "lucide-react"
 import { api } from "@/utils/Request"
 import { getFromLocalStorage } from "@/utils/Request"
+import { useEffect, useState } from "react"
 
 
 export default function LoginForm() {
   const router = useRouter()
   const { toast } = useToast()
+  const [loading, setLoading] = useState<Boolean>(false)
 
-  if(getFromLocalStorage('apiToken')) router.push('/dashboard')
+  useEffect(() => {
+    if(getFromLocalStorage('apiToken')) router.push('/dashboard')
+  }, [router])
+  
 
   const login = async (formData: FormData) => {
     let data = Object.fromEntries(formData)
     await api.post('/api/login', data)
     .then((res) => {
       localStorage.setItem('apiToken', res.data.token)
+      setLoading(false)
       router.push('/dashboard')
     })
     .catch((err) => {
+      setLoading(false)
       console.log(err)
       toast({
         variant: "destructive",
@@ -37,7 +43,7 @@ export default function LoginForm() {
   
 
   return (
-    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+    <div className="w-full lg:grid lg:min-h-[600px] xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
@@ -46,7 +52,7 @@ export default function LoginForm() {
               Enter your email below to login to your account
             </p>
           </div>
-          <form action={login}>
+          <form action={login} onSubmit={() => setLoading(true)}>
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -75,9 +81,16 @@ export default function LoginForm() {
                 required 
               />
             </div>
+            {loading ? 
+            <Button disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Login
+            </Button>
+            :
             <Button type="submit" className="w-full">
               Login
             </Button>
+            }
             <Button variant="outline" className="w-full">
               Login with Google
             </Button>
@@ -91,7 +104,7 @@ export default function LoginForm() {
           </div>
         </div>
       </div>
-      <div className="hidden bg-muted lg:block">
+      {/* <div className="hidden bg-muted lg:block">
         <Image
           src="/login.png"
           alt="Image"
@@ -99,7 +112,9 @@ export default function LoginForm() {
           height="1080"
           className="h-full w-full dark:brightness-[0.2] dark:grayscale"
         />
-      </div>
+      </div> */}
     </div>
+ 
+
   )
 }

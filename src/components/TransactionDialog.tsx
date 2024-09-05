@@ -120,7 +120,7 @@ export default function TransactionDialog() {
                                     <SelectGroup>
                                     <SelectLabel>Category Income</SelectLabel>
                                     {isLoading ? (
-                                        <Skeleton className="h-5 w-auto mx-4 my-2"/>                         
+                                        <Skeleton className="h-5 w-auto mx-4 my-2"/>                   
                                     )
                                     : 
                                         category?.data?.map((tmp: any) => (
