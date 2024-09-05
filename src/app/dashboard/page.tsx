@@ -44,7 +44,7 @@ import { useTransactions, calculateStatistics } from "@/lib/api";
 import { DateRange } from "react-day-picker";
 import { addDays, format } from "date-fns";
 import { useEffect, useState } from "react";
-import Navbar from "@/components/NavBar";
+import Navbar from "@/components/navbar";
 import { HiArrowDownLeft, HiArrowUpRight } from "react-icons/hi2";
 import { IconContext } from "react-icons";
 
