@@ -2,15 +2,9 @@
 
 import Link from "next/link"
 import {
-    Activity,
-    ArrowUpRight,
     CircleUser,
-    CreditCard,
-    DollarSign,
     Menu,
     Package2,
-    Search,
-    Users,
 } from "lucide-react"
 import {
     DropdownMenu,
@@ -21,18 +15,19 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useToast } from "./ui/use-toast"
-import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/DarkToggle"
 import { redirect, useRouter } from "next/navigation"
 import { protected_api } from "@/utils/Request"
 import { getFromLocalStorage } from "@/utils/Request"
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
+import SearchAssets from "./SearchAssets"
 
 export default function Navbar() {
     const router = useRouter()
     const { toast } = useToast()
+   
 
     const logout = async () => {
       await protected_api.post('/api/logout')
@@ -75,7 +70,7 @@ export default function Navbar() {
           >
             Assets
           </Link>
-          <Link
+          {/* <Link
             href="#"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
@@ -92,7 +87,7 @@ export default function Navbar() {
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Analytics
-          </Link>
+          </Link> */}
         </nav>
         <Sheet>
           <SheetTrigger asChild>
@@ -114,16 +109,16 @@ export default function Navbar() {
                 <Package2 className="h-6 w-6" />
                 <span className="sr-only">Acme Inc</span>
               </Link>
-              <Link href="#" className="hover:text-foreground">
+              <Link href="/dashboard" className="hover:text-foreground">
                 Dashboard
               </Link>
               <Link
-                href="#"
+                href="/assets"
                 className="text-muted-foreground hover:text-foreground"
               >
-                Orders
+                Assets
               </Link>
-              <Link
+              {/* <Link
                 href="#"
                 className="text-muted-foreground hover:text-foreground"
               >
@@ -140,21 +135,14 @@ export default function Navbar() {
                 className="text-muted-foreground hover:text-foreground"
               >
                 Analytics
-              </Link>
+              </Link> */}
             </nav>
           </SheetContent>
         </Sheet>
-        <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <form className="ml-auto flex-1 sm:flex-initial">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search products..."
-                className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-              />
-            </div>
-          </form>
+        <div className="flex w-full items-end gap-4 md:ml-auto md:gap-2 lg:gap-4">
+          <div className="relative ml-auto">
+            <SearchAssets /> 
+          </div>
           <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

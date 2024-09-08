@@ -1,4 +1,6 @@
 import { protected_api } from "@/utils/Request";
+import axios from "axios";
+import { headers } from "next/headers";
 import useSWR from "swr"
 
 const fetcher = async (url: string) => await protected_api.get(url)
@@ -52,5 +54,16 @@ export const useCategoryByType = (type: string) => {
 
 export const calculateStatistics = async (data: any) => {
     const res = await protected_api.post('/api/transactions/statistics', data)
+    return res.data
+}
+
+export const searchAsset = async (q: string) => {
+    const res = await axios.get('https://api.coingecko.com/api/v3/search', {
+        params: {query: q},
+        headers: {
+            accept: 'application/json', 
+            'x-cg-demo-api-key': process.env.NEXT_PUBLIC_COINGECKO_API_KEY
+        }
+    })
     return res.data
 }
