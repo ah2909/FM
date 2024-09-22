@@ -18,6 +18,11 @@ import {
     SelectGroup,
     SelectLabel,
 } from "@/components/ui/select"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import { Skeleton } from "./ui/skeleton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -26,6 +31,10 @@ import { useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { useSWRConfig } from 'swr'
 import { useCategoryByType, addTransaction } from "@/lib/api"
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
+import { CalendarIcon } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
 
 export default function TransactionDialog() {
     const { toast } = useToast()
@@ -33,9 +42,12 @@ export default function TransactionDialog() {
     const [transactionType, setTransactionType] = useState<string>('')
     const [open, setOpen] = useState<boolean>(false);
     const { category, isLoading, isError } = useCategoryByType(transactionType)
+    const [date, setDate] = useState<Date | undefined>(new Date())
 
     const onSubmit = async (formData: FormData) => {
         let data = Object.fromEntries(formData)
+        if(date) data['created_at'] = date.toLocaleString()
+        
         await addTransaction(data)
         .then(() => {
             setOpen(false)
@@ -49,8 +61,7 @@ export default function TransactionDialog() {
                 title: err,
               })
         })
-        mutate(`/api/transactions`)
-        mutate('/api/transactions/statistics')
+        mutate(`/api/transactions?page=1`)
     }
 
 
@@ -86,6 +97,41 @@ export default function TransactionDialog() {
                                 placeholder="100000"
                                 className="col-span-3"
                             />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="category" className="text-right">
+                                Date
+                            </Label>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        className={cn(
+                                            "w-[240px] pl-3 text-left font-normal",
+                                            !date && "text-muted-foreground"
+                                        )}
+                                    >
+                                    {date ? (
+                                        format(date, "PPP")
+                                    ) : (
+                                        <span>Pick a date</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                    disabled={(date) =>
+                                        date > new Date() || date < new Date("1900-01-01")
+                                    }
+                                    initialFocus
+                                />
+                                </PopoverContent>
+                            </Popover>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="type" className="text-right">

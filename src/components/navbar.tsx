@@ -18,21 +18,24 @@ import { useToast } from "./ui/use-toast"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/DarkToggle"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { protected_api } from "@/utils/Request"
-import { getFromLocalStorage } from "@/utils/Request"
-import { useState, useEffect } from "react"
 import SearchAssets from "./SearchAssets"
+import { useAuth } from "./AuthProvider"
+import { getFromLocalStorage } from "@/utils/Request"
 
 export default function Navbar() {
     const router = useRouter()
     const { toast } = useToast()
-   
+    const { user } = useAuth()
+
+    if(!getFromLocalStorage('apiToken')) router.push('/login')
 
     const logout = async () => {
       await protected_api.post('/api/logout')
       .then(() => {
-        localStorage.clear()
+        localStorage.removeItem('apiToken')
+        localStorage.removeItem('user')
         router.push('/login')
       })
       .catch((err) => {
@@ -43,10 +46,6 @@ export default function Navbar() {
         })
       })
     }
-
-    useEffect(() => {
-        if(!getFromLocalStorage('apiToken')) redirect('/login')
-    }, [])
 
     return (
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -70,24 +69,13 @@ export default function Navbar() {
           >
             Assets
           </Link>
-          {/* <Link
-            href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Products
-          </Link>
           <Link
-            href="#"
+            href="/account"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Customers
+            Accounts
           </Link>
-          <Link
-            href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Analytics
-          </Link> */}
+          
         </nav>
         <Sheet>
           <SheetTrigger asChild>
@@ -118,24 +106,12 @@ export default function Navbar() {
               >
                 Assets
               </Link>
-              {/* <Link
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Products
-              </Link>
               <Link
-                href="#"
+                href="/account"
                 className="text-muted-foreground hover:text-foreground"
               >
-                Customers
+                Accounts
               </Link>
-              <Link
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Analytics
-              </Link> */}
             </nav>
           </SheetContent>
         </Sheet>
@@ -152,7 +128,7 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Hello, {user?.name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>

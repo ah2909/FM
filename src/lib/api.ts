@@ -1,6 +1,5 @@
 import { protected_api } from "@/utils/Request";
 import axios from "axios";
-import { headers } from "next/headers";
 import useSWR from "swr"
 
 const fetcher = async (url: string) => await protected_api.get(url)

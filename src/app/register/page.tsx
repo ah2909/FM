@@ -11,13 +11,15 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { getFromLocalStorage, api } from "@/utils/Request"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
+import { getFromLocalStorage } from "@/utils/Request"
+import { api } from "@/utils/Request"
 
 export default function RegisterForm() {
   const router = useRouter()
   const { toast } = useToast()
+  
   if(getFromLocalStorage('apiToken')) router.push('/dashboard')
 
   const signUp = async (formData: FormData) => {
