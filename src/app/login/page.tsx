@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuth } from "@/components/AuthProvider"
 import { getFromLocalStorage } from "@/utils/Request"
 
@@ -17,7 +17,9 @@ export default function LoginForm() {
   const [loading, setLoading] = useState<Boolean>(false)
   const { login } = useAuth()
   
-  if(getFromLocalStorage('apiToken')) router.push('/dashboard')
+  useEffect(() => {
+    if(getFromLocalStorage('apiToken')) router.push('/dashboard')
+  }, [])
   
   const handleLogin = async (formData: FormData) => {
     let data = Object.fromEntries(formData)

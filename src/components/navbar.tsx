@@ -23,14 +23,17 @@ import { protected_api } from "@/utils/Request"
 import SearchAssets from "./SearchAssets"
 import { useAuth } from "./AuthProvider"
 import { getFromLocalStorage } from "@/utils/Request"
+import { useEffect } from "react"
 
 export default function Navbar() {
     const router = useRouter()
     const { toast } = useToast()
     const { user } = useAuth()
 
-    if(!getFromLocalStorage('apiToken')) router.push('/login')
-
+    useEffect(() => {
+      if(!getFromLocalStorage('apiToken')) router.push('/login')
+    }, [])
+    
     const logout = async () => {
       await protected_api.post('/api/logout')
       .then(() => {

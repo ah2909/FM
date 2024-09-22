@@ -15,13 +15,16 @@ import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import { getFromLocalStorage } from "@/utils/Request"
 import { api } from "@/utils/Request"
+import { useEffect } from "react"
 
 export default function RegisterForm() {
   const router = useRouter()
   const { toast } = useToast()
   
-  if(getFromLocalStorage('apiToken')) router.push('/dashboard')
-
+  useEffect(() => {
+    if(getFromLocalStorage('apiToken')) router.push('/dashboard')
+  })
+  
   const signUp = async (formData: FormData) => {
     let tmp_data = Object.fromEntries(formData)
     let {first_name, last_name, ...data} = tmp_data
