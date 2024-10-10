@@ -19,17 +19,16 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/DarkToggle"
 import { useRouter } from "next/navigation"
-import { protected_api } from "@/utils/Request"
+import { protected_api, getFromLocalStorage } from "@/utils/Request"
 import SearchAssets from "./SearchAssets"
 import { useAuth } from "./AuthProvider"
-import { getFromLocalStorage } from "@/utils/Request"
 import { useEffect } from "react"
 
 export default function Navbar() {
     const router = useRouter()
     const { toast } = useToast()
     const { user } = useAuth()
-
+    
     useEffect(() => {
       if(!getFromLocalStorage('apiToken')) router.push('/login')
     }, [])

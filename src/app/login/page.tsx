@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/components/AuthProvider"
@@ -13,7 +12,6 @@ import { getFromLocalStorage } from "@/utils/Request"
 
 export default function LoginForm() {
   const router = useRouter()
-  const { toast } = useToast()
   const [loading, setLoading] = useState<Boolean>(false)
   const { login } = useAuth()
   
@@ -26,14 +24,9 @@ export default function LoginForm() {
     try {
       await login(data)
       setLoading(false)
-      router.push('/dashboard')
+      
     } catch (err) {
-      setLoading(false)
       console.log(err)
-      toast({
-        variant: "destructive",
-        title: "Wrong email or password",
-      })
     }
   }
   
@@ -56,6 +49,7 @@ export default function LoginForm() {
                 name="email"
                 type="email"
                 placeholder="example@sth.com"
+                tabIndex={1}
                 required
               />
             </div>
@@ -73,6 +67,7 @@ export default function LoginForm() {
                 id="password"
                 name="password"
                 type="password"
+                tabIndex={2}
                 required 
               />
             </div>

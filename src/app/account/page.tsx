@@ -6,7 +6,7 @@ import { CreditCard } from 'lucide-react'
 import Navbar from '@/components/navbar'
 import { RecentTransactions } from '@/components/RecentTransactions'
 import Image from 'next/image'
-import AddAccountForm from '@/components/AddBankingAccount'
+import AddAccountForm from '@/components/AddAPIKey'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { PlusCircle } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -27,7 +27,7 @@ const initialAccounts: Account[] = [
   { id: '4', bankName: 'Citibank', accountType: 'Debit Card', cardNumber: '4444 4444 4444 4444', balance: 15000, color: '#30C073' },
 ]
 
-const VisaCard = ({ account }: { account: Account }) => (
+const VisaCard = ({ account }: { account: any }) => (
   <Card className="text-white" style={{backgroundColor: account.color}}>
     <CardContent className="p-6">
       <div className="flex justify-between items-start mb-4">

@@ -6,7 +6,6 @@ const fetcher = async (url: string) => await protected_api.get(url)
 .then((res) => res.data);
 
 
-
 export const useTransactions = (page: number) => {
     const { data, error, isLoading } = useSWR(
         `/api/transactions?page=${page}`, 
@@ -22,6 +21,11 @@ export const useTransactions = (page: number) => {
 
 export const addTransaction = async (data: any) => {
     await protected_api.post('/api/transactions', data)
+    .then(res => res.data)
+}
+
+export const addKey = async (data: any) => {
+    await protected_api.post('/api/binance-key', data)
     .then(res => res.data)
 }
 
@@ -65,4 +69,30 @@ export const searchAsset = async (q: string) => {
         }
     })
     return res.data
+}
+
+export const useBinanceKey = () => {
+    const { data, error, isLoading } = useSWR(
+        '/api/binance-key', 
+        fetcher,
+        { revalidateOnFocus: false, }
+    )
+    return {
+        key: data,
+        isLoading,
+        isError: error
+    }
+}
+
+export const useAssetDetails = () => {
+    const { data, error, isLoading } = useSWR(
+        '/api/binance-key/assets', 
+        fetcher,
+        { revalidateOnFocus: false, }
+    )
+    return {
+        data: data,
+        isLoading,
+        isError: error
+    }
 }

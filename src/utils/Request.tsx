@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 export const getFromLocalStorage = (key: string) => {
     if (!key || typeof window === "undefined" || !localStorage.getItem(key)) {
       return null
@@ -28,7 +29,7 @@ protected_api.interceptors.request.use(
   (error) => {
     return Promise.reject(error);
   }
-);
+)
 protected_api.interceptors.response.use(
   (response) => response,
   (error) => {

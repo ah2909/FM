@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { api } from '@/utils/Request'
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from 'next/navigation'
 
 type AuthContextType = {
   user: any
@@ -14,6 +16,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const { toast } = useToast()
+  const router = useRouter()
   
   useEffect(() => {
     // Check if user is stored in localStorage on initial load
@@ -25,16 +29,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (data: any) => {
-    // let data = Object.fromEntries(formData)
     await api.post('/api/login', data)
     .then((res) => {
       localStorage.setItem('apiToken', res.data.token)
       localStorage.setItem('user', JSON.stringify(res.data))
       setUser(res.data)
       setIsAuthenticated(true)
+      router.push('/dashboard')
     })
     .catch((err) => {
-      console.log(err)
+      toast({
+        variant: "destructive",
+        title: "Wrong email or password",
+      })
     })
   }
 
