@@ -12,7 +12,7 @@ const config = {
   prefix: "",
   theme: {
     colors: {
-      background: 'hsl(var(--background) / <alpha-value>)',
+      background: 'hsl(var(--background))',
       foreground: 'hsl(var(--foreground) / <alpha-value>)',
       card: 'hsl(var(--card) / <alpha-value>)',
       card_foreground: 'hsl(var(--card-foreground) / <alpha-value>)',

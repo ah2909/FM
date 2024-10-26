@@ -45,8 +45,6 @@ export default function SearchAssets() {
 
 	const handleSelectAsset = (asset: any) => {
 		setSearchQuery(`${asset.name}`);
-		setOpen(false);
-		// You can add additional logic here, e.g., navigating to asset details page
 	};
 
 	const handleOpen = (open: boolean) => {
@@ -82,12 +80,11 @@ export default function SearchAssets() {
 									target="_blank"
 									href={`https://www.coingecko.com/en/coins/${asset.id}`}
 									rel="noopener noreferrer"
+									onClick={() =>
+										handleSelectAsset(asset)
+									}
 								>
-									<CommandItem
-										onSelect={() =>
-											handleSelectAsset(asset)
-										}
-									>
+									<CommandItem>
 										<Image
 											src={asset.thumb}
 											alt="logo"

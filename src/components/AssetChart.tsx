@@ -1,7 +1,8 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { format } from 'date-fns'
 import {
   Card,
   CardContent,
@@ -17,47 +18,57 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-export const description = "Expense Bar Chart"
 
-const chartData = [
-  { day: "1", expense: 186 },
-  { day: "2", expense: 305 },
-  { day: "3", expense: 237 },
-  { day: "4", expense: 73 },
-  { day: "5", expense: 209 },
-  { day: "6", expense: 214 },
-]
+export const description = "History asset balance"
 
 const chartConfig = {
-  expense: {
-    label: "Expense",
+  balance: {
+    label: "Balance",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function ExpenseBarChart() {
+export function AssetChart({ data }: any) {
+  function getTenDaysBefore(): Date[] {
+    const dates: Date[] = [];
+    const today = new Date();
+  
+    dates.push(new Date(today));
+  
+    for (let i = 1; i < 10; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      dates.push(date);
+    }
+    return dates;
+  }
+  const formatData = data.map((tmp: any, index: number) => ({day: getTenDaysBefore()[index], balance: tmp.asset_balance}))
+  const formatXAxis = (tickItem: Date) => {
+    return format(new Date(tickItem), 'MMM d')
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Expense</CardTitle>
-        <CardDescription>01 Sep 2024 - 30 Sep 2024</CardDescription>
+        <CardTitle>Asset Balance</CardTitle>
+        <CardDescription>Last 10 days</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+          <BarChart accessibilityLayer data={formatData.reverse()}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="day"
               tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={formatXAxis}
+              axisLine={true}
             />
+            <YAxis dataKey="balance"/>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="expense" fill="var(--color-expense)" radius={8} />
+            <Bar dataKey="balance" fill="var(--color-balance)" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
@@ -72,3 +83,4 @@ export function ExpenseBarChart() {
     </Card>
   )
 }
+

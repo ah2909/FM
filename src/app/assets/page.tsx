@@ -9,26 +9,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Navbar from '@/components/navbar'
 import { useAssetDetails } from '@/lib/api'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AssetChart } from '@/components/AssetChart'
+import { Loader2 } from "lucide-react"
 
 export default function PortfolioOverview() {
   const { data, isLoading, isError} = useAssetDetails()
-  
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main className="max-w-5xl mx-auto p-8">
         <h2 className="text-3xl font-bold mb-8">Portfolio Overview</h2>
         
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Total Value</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Replace with actual chart component */}
-            <div className="h-48 bg-secondary rounded-md mb-4"></div>
-          </CardContent>
-        </Card>
-
         <div className="flex justify-between items-center mb-8">
           <div>
             {isLoading ? (
@@ -46,20 +38,14 @@ export default function PortfolioOverview() {
           </div>
         </div>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Asset Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <AssetBar label="Stocks" value={350000} percentage={35} />
-              <AssetBar label="Cryptocurrencies" value={150000} percentage={15} />
-              <AssetBar label="Cash" value={500000} percentage={50} />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
+        {!isLoading ? (
+          <AssetChart data={data.history}/>
+        )
+        : (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        )}
+        
+        <Card className='mt-8'>
           <CardHeader>
             <CardTitle>Assets</CardTitle>
           </CardHeader>
