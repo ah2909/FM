@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ChevronUp, ChevronDown} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,7 +14,12 @@ import { Loader2 } from "lucide-react"
 
 export default function PortfolioOverview() {
   const { data, isLoading, isError} = useAssetDetails()
+  const [todayChange, setTodayChange] = useState<number>(0);
 
+  useEffect(() => {
+    if(!isLoading)
+      setTodayChange(Math.floor((parseInt(data.history[0].asset_balance) - parseInt(data.history[1].asset_balance)) / parseInt(data.history[1].asset_balance) * 100))
+  }, [data, isLoading])
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -27,10 +32,16 @@ export default function PortfolioOverview() {
               <Skeleton className="h-5 w-auto mt-3" />
             )
             : (
-              <h2 className="text-4xl font-bold">${data.total}</h2>
-            )}
-            
-            <p className="text-primary">3.2% today</p>
+              <>
+                <h2 className="text-4xl font-bold">${data.total}</h2>
+                {todayChange >= 0 ? (
+                  <p className="text-primary">{todayChange}% today</p>
+                )
+                : (
+                  <p className="text-destructive">{todayChange}% today</p>
+                )}
+              </>
+            )} 
           </div>
           <div className="space-x-4">
             <Button>Deposit</Button>
