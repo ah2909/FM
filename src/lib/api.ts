@@ -2,7 +2,7 @@ import { protected_api } from "@/utils/Request";
 import axios from "axios";
 import useSWR from "swr"
 
-const fetcher = async (url: string) => await protected_api.get(url)
+export const fetcher = async (url: string) => await protected_api.get(url)
 .then((res) => res.data);
 
 

@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { Loader2 } from "lucide-react"
 
 
 export const description = "History asset balance"
@@ -27,21 +28,25 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function AssetChart({ data }: any) {
-  function getTenDaysBefore(): Date[] {
-    const dates: Date[] = []
-    const today = new Date()
-  
-    dates.push(new Date(today))
-  
-    for (let i = 1; i < 10; i++) {
-      const date = new Date(today)
-      date.setDate(today.getDate() - i)
-      dates.push(date)
-    }
-    return dates
+function getTenDaysBefore(): Date[] {
+  const dates: Date[] = []
+  const today = new Date()
+
+  dates.push(new Date(today))
+
+  for (let i = 1; i < 10; i++) {
+    const date = new Date(today)
+    date.setDate(today.getDate() - i)
+    dates.push(date)
   }
-  const formatData = data.map((tmp: any, index: number) => ({day: getTenDaysBefore()[index], balance: tmp.asset_balance}))
+  return dates
+}
+
+export function AssetChart({ data }: any) {
+
+  if(!data) return <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+
+  const formatData = data?.map((tmp: any, index: number) => ({day: getTenDaysBefore()[index], balance: tmp.asset_balance}))
   const changed = Math.floor((parseInt(formatData[0].balance) - parseInt(formatData[9].balance)) / parseInt(formatData[9].balance) * 100)
   const formatXAxis = (tickItem: Date) => {
     return format(new Date(tickItem), 'MMM d')

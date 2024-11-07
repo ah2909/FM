@@ -64,12 +64,12 @@ export default function BankingPage() {
   }
   
   return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div className="flex min-h-screen w-full flex-col gap-4">
         <Navbar />
         <div className="flex flex-row-reverse">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button className="mt-8 mr-8">
+              <Button className="mr-4 lg:mt-8 lg:mr-8">
                 <PlusCircle className="mr-2 h-4 w-4" /> Add Account
               </Button>
             </DialogTrigger>
@@ -84,12 +84,12 @@ export default function BankingPage() {
             </DialogContent>
           </Dialog>
 				</div>
-        <div className="grid grid-cols-1 p-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 p-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-4">
             {accounts.map(account => (
               <VisaCard key={account.id} account={account} />
             ))}
         </div>
-        <div className="grid grid-cols-1 p-8">
+        <div className="grid grid-cols-1 p-4">
             <RecentTransactions onAddTran={addTran}/>
         </div>
     </div>
