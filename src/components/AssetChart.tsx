@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp, TrendingDown } from "lucide-react"
-import { LabelList, Line, LineChart, CartesianGrid, XAxis } from "recharts"
+import { LabelList, Line, LineChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
 import { format } from 'date-fns'
 import {
   Card,
@@ -59,24 +59,28 @@ export function AssetChart({ data }: any) {
         <CardDescription>Last 10 days</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="w-full">
+        <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
             data={formatData.reverse()}
             margin={{
-              top: 10,
               right: 20,
               left: 20,
-              bottom: 10,
             }}
             
           >
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="day"
-              tickLine={false}
+              tickLine={true}
               tickFormatter={formatXAxis}
               axisLine={false}
+            />
+            <YAxis 
+             type="number"
+             dataKey="balance"
+             domain={['dataMin - 50', 'dataMax + 100']} 
+             hide={true}
             />
             <ChartTooltip
               cursor={false}
