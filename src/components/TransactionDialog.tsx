@@ -44,9 +44,29 @@ export default function TransactionDialog() {
     const { category, isLoading, isError } = useCategoryByType(transactionType)
     const [date, setDate] = useState<Date | undefined>(new Date())
 
+    function padTwoDigits(num: number) {
+        return num.toString().padStart(2, "0");
+    }
+    function formatDate(date: Date, dateDiveder: string = "-") {
+  
+        return (
+          [
+            date.getFullYear(),
+            padTwoDigits(date.getMonth() + 1),
+            padTwoDigits(date.getDate()),
+          ].join(dateDiveder) +
+          " " +
+          [
+            padTwoDigits(date.getHours()),
+            padTwoDigits(date.getMinutes()),
+            padTwoDigits(date.getSeconds()),
+          ].join(":")
+        );
+    }
+
     const onSubmit = async (formData: FormData) => {
         let data = Object.fromEntries(formData)
-        if(date) data['created_at'] = date.toLocaleString()
+        if(date) data['created_at'] = formatDate(date)
         
         await addTransaction(data)
         .then(() => {
