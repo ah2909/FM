@@ -79,7 +79,7 @@ export function AssetChart({ data }: any) {
             <YAxis 
              type="number"
              dataKey="balance"
-             domain={['dataMin - 50', 'dataMax + 100']} 
+             domain={['dataMin - 50', 'dataMax + 50']} 
              hide={true}
             />
             <ChartTooltip

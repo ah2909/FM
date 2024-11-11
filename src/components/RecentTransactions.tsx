@@ -75,17 +75,17 @@ export function RecentTransactions({ onAddTran }: { onAddTran: (tran: any[]) => 
 	};
     return (
         <Card
-            className="xl:col-span-2"
+            className="lg:col-span-2"
             x-chunk="dashboard-01-chunk-4"
         >
-            <CardHeader className="flex flex-row items-center">
+            <CardHeader className="flex flex-row items-center justify-between">
                 <div className="grid gap-2">
                     <CardTitle>Transactions</CardTitle>
                     <CardDescription>
                         Recent transactions of this week.
                     </CardDescription>
                 </div>
-                <div className="ml-auto gap-1 bg-background">
+                <div className="gap-1 bg-background">
                     <TransactionDialog />
                 </div>
             </CardHeader>

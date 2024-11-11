@@ -90,7 +90,7 @@ export default function TransactionDialog() {
             <DialogTrigger asChild>
                 <Button>Add transaction</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="w-[350px] sm:max-w-[425px]">
                 <DialogHeader>
                 <DialogTitle>Add transaction</DialogTitle>
                 </DialogHeader>
@@ -127,7 +127,7 @@ export default function TransactionDialog() {
                                     <Button
                                         variant={"outline"}
                                         className={cn(
-                                            "w-[240px] pl-3 text-left font-normal",
+                                            "w-[221.3px] sm:w-[240px] pl-3 text-left font-normal",
                                             !date && "text-muted-foreground"
                                         )}
                                     >
@@ -148,7 +148,6 @@ export default function TransactionDialog() {
                                     disabled={(date) =>
                                         date > new Date() || date < new Date("1900-01-01")
                                     }
-                                    initialFocus
                                 />
                                 </PopoverContent>
                             </Popover>
@@ -161,7 +160,7 @@ export default function TransactionDialog() {
                                 onValueChange={(e) => {
                                     setTransactionType(e)
                                 }}>
-                                <SelectTrigger className="w-[240px]">
+                                <SelectTrigger className="w-[221.3px] sm:w-[240px]">
                                     <SelectValue placeholder="Select type of transaction" />
                                 </SelectTrigger>
                                 <SelectContent>

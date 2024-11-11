@@ -66,12 +66,12 @@ export default function Dashboard() {
 	return (
 		<div className="flex min-h-screen w-full flex-col gap-4 px-4">
 			<Navbar />
-			<div className="flex flex-row-reverse">
+			<div className="flex flex-row-reverse px-6">
 				<DateRangePicker
 					onDateRangeChange={handleDateRangeChange}
 				/>
 			</div>
-			<div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+			<div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4 px-6">
 				<Card x-chunk="dashboard-01-chunk-0">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">
@@ -153,7 +153,7 @@ export default function Dashboard() {
 					</CardContent>
 				</Card>
 			</div>
-			<div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+			<div className="grid gap-4 grid-cols-1 lg:grid-cols-3 p-4">
 				<RecentTransactions onAddTran={addTran}/>
 				<div className="h-auto">
 					<ExpenseBarChart />

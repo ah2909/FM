@@ -47,8 +47,8 @@ export default function PortfolioOverview() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <main className="max-w-5xl mx-auto p-4">
-        <h2 className="text-3xl font-bold mb-8">Portfolio Overview</h2>
+      <main className="max-w-5xl mx-auto p-6">
+        <h2 className="text-3xl font-bold mb-8">Binance Overview</h2>
         
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -67,10 +67,10 @@ export default function PortfolioOverview() {
               </>
             )} 
           </div>
-          <div className="space-x-4">
+          {/* <div className="space-x-4">
             <Button>Deposit</Button>
             <Button variant="outline">Withdraw</Button>
-          </div>
+          </div> */}
         </div>
 
         {!isLoading ? (
@@ -121,7 +121,6 @@ export default function PortfolioOverview() {
           </CardContent>
         </Card>
       </main>
-
     </div>
   )
 }
