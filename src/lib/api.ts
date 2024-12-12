@@ -88,6 +88,23 @@ export const useAssetDetails = () => {
     const { data, error, isLoading } = useSWR(
         '/api/binance-key/assets', 
         fetcher,
+        { 
+            revalidateOnFocus: false,
+            refreshInterval: 0,
+        }
+    )
+    return {
+        data: data,
+        isLoading,
+        isError: error
+    }
+}
+
+export const useTransactionHistory = (symbol: any, flag: any)=> {
+    const { data, error, isLoading } = useSWR(
+        flag === symbol ?
+        `/api/binance-key/transactions?symbol=${symbol}` : null, 
+        fetcher,
         { revalidateOnFocus: false, }
     )
     return {

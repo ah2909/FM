@@ -1,97 +1,170 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CreditCard } from 'lucide-react'
 import Navbar from '@/components/navbar'
-import { RecentTransactions } from '@/components/RecentTransactions'
 import Image from 'next/image'
 import AddAccountForm from '@/components/AddAPIKey'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { PlusCircle } from 'lucide-react'
+import { useAssetDetails } from '@/lib/api'
+import { useState, useEffect } from 'react'
+import { PlusCircle, Trash2, ExternalLink, Copy, Moon, Sun } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type Account = {
   id: string
-  bankName: string
-  accountType: string
-  cardNumber: string
+  name: string
+  type: 'Binance' | 'OKX' | 'Coinbase'                                
+  apiKey: string
   balance: number
-  color: string
 }
 
-const initialAccounts: Account[] = [
-  { id: '1', bankName: 'Chase', accountType: 'Debit Card', cardNumber: '1111 1111 1111 1111', balance: 2500, color: '#1D55E5' },
-  { id: '2', bankName: 'Bank of America', accountType: 'Debit Card', cardNumber: '2222 2222 2222 2222', balance: 10000, color: '#C04D30' },
-  { id: '3', bankName: 'Wells Fargo', accountType: 'Debit Card', cardNumber: '3333 3333 3333 3333', balance: 5000, color: '#1E5CA2' },
-  { id: '4', bankName: 'Citibank', accountType: 'Debit Card', cardNumber: '4444 4444 4444 4444', balance: 15000, color: '#30C073' },
-]
-
-const VisaCard = ({ account }: { account: any }) => (
-  <Card className="text-white" style={{backgroundColor: account.color}}>
-    <CardContent className="p-6">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <p className="text-sm font-semibold">{account.bankName}</p>
-          <p className="text-xs opacity-75">{account.accountType}</p>
-        </div>
-        <CreditCard className="h-8 w-8" />
-      </div>
-      <p className="text-xl font-bold mb-4">{account.cardNumber}</p>
-      <div className="flex justify-between items-center">
-        <div>
-          <p className="text-xs opacity-75">Balance</p>
-          <p className="text-lg font-semibold">${account.balance.toFixed(2)}</p>
-        </div>
-        <Image 
-            src="https://th.bing.com/th?id=OIP.DCgfEJDZZDka6j0wAAPFrAHaEK&w=333&h=187&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2"
-            alt="Visa logo" 
-            height={30}
-            width={50}
-        />
-      </div>
-    </CardContent>
-  </Card>
-)
-
 export default function BankingPage() {
-  const [accounts] = useState<Account[]>(initialAccounts)
-  const [trans, setTrans] = useState<any[]>([])
   const [open, setOpen] = useState(false)
+  const { data, isLoading, isError} = useAssetDetails()
+  const [accounts, setAccounts] = useState<Account[]>([
+    { id: '1', name: 'My Binance', type: 'Binance', apiKey: 'xxxxxxxxxxxxxxxx', balance: 1234.56 },
+    { id: '2', name: 'OKX Trading', type: 'OKX', apiKey: 'yyyyyyyyyyyyyyyy', balance: 789.01 },
+  ])
 
-  const addTran = (newTran: any[]) => {
-      setTrans(newTran)
+  const [newAccount, setNewAccount] = useState<Partial<Account>>({})
+  const addAccount = () => {
+    if (newAccount.name && newAccount.type && newAccount.apiKey) {
+      setAccounts([...accounts, { ...newAccount, id: Date.now().toString(), balance: 0 } as Account])
+      setNewAccount({})
+    }
+  }
+
+  const removeAccount = (id: string) => {
+    setAccounts(accounts.filter(account => account.id !== id))
+  }
+
+  const copyApiKey = (apiKey: string) => {
+    navigator.clipboard.writeText(apiKey)
   }
   
   return (
     <div className="flex min-h-screen w-full flex-col gap-4">
-        <Navbar />
-        <div className="flex flex-row-reverse">
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button className="mr-4 lg:mt-8 lg:mr-8">
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Account
+      <Navbar />
+      <div className="flex flex-row-reverse">
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="mr-4 lg:mt-8 lg:mr-8">
+              <PlusCircle className="mr-2 h-4 w-4" /> Add Account
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add Banking Account</DialogTitle>
+              <DialogDescription>
+                Enter the details of the new banking account. Click save when you are done.
+              </DialogDescription>
+            </DialogHeader>
+            <AddAccountForm onClose={() => setOpen(false)} />
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="grid grid-cols-1 px-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-4">
+        {accounts.map((account, index) => (
+          <Card key={account.id} className="bg-card text-card-foreground">
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                {account.name}
+                <Button variant="ghost" size="icon" onClick={() => removeAccount(account.id)}>
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Remove account</span>
+                </Button>
+              </CardTitle>
+              <CardDescription>{account.type}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold">API Key:</span>
+                <div className="flex items-center">
+                  <span className="mr-2">{account.apiKey.slice(0, 4)}...{account.apiKey.slice(-4)}</span>
+                  <Button variant="ghost" size="icon" onClick={() => copyApiKey(account.apiKey)}>
+                    <Copy className="h-4 w-4" />
+                    <span className="sr-only">Copy API key</span>
+                  </Button>
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold">Balance:</span>
+                <span>${account.balance.toFixed(2)}</span>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" className="w-full">
+                <ExternalLink className="mr-2 h-4 w-4" />
+                Open {account.type}
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add Banking Account</DialogTitle>
-                <DialogDescription>
-                  Enter the details of the new banking account. Click save when you are done.
-                </DialogDescription>
-              </DialogHeader>
-              <AddAccountForm onClose={() => setOpen(false)} />
-            </DialogContent>
-          </Dialog>
-				</div>
-        <div className="grid grid-cols-1 px-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-4">
-            {accounts.map(account => (
-              <VisaCard key={account.id} account={account} />
-            ))}
-        </div>
-        <div className="grid grid-cols-1 p-8">
-            <RecentTransactions onAddTran={addTran}/>
-        </div>
+            </CardFooter>
+          </Card>
+        ))}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="h-full min-h-[200px] flex flex-col items-center justify-center bg-card hover:bg-accent">
+              <PlusCircle className="h-6 w-6 mb-2" />
+              Add New Account
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="bg-background">
+            <DialogHeader>
+              <DialogTitle>Add New Crypto Account</DialogTitle>
+              <DialogDescription>
+                Connect a new cryptocurrency exchange account to manage your assets.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  value={newAccount.name || ''}
+                  onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="type" className="text-right">
+                  Type
+                </Label>
+                <Select
+                  onValueChange={(value) => setNewAccount({ ...newAccount, type: value as Account['type'] })}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select exchange" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Binance">Binance</SelectItem>
+                    <SelectItem value="OKX">OKX</SelectItem>
+                    <SelectItem value="Coinbase">Coinbase</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="apiKey" className="text-right">
+                  API Key
+                </Label>
+                <Input
+                  id="apiKey"
+                  value={newAccount.apiKey || ''}
+                  onChange={(e) => setNewAccount({ ...newAccount, apiKey: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={addAccount}>Add Account</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   )
 }
